@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(uuid())
+  name            String?
+  email           String           @unique
+  emailVerified   DateTime?
+  hashedPassword  String?
+  image           String?
+  currency        String           @default("INR")
+  darkMode        Boolean          @default(true)
+  budgetAlerts    Boolean          @default(true)
+  aiInsights      Boolean          @default(true)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  budgets         Budget[]
+  connectedEmails ConnectedEmail[]
+  accounts        FinanceAccount[]
+  insights        Insight[]
+  investments     Investment[]
+  savingsGoals    SavingsGoal[]
+  sessions        Session[]
+  transactions    Transaction[]
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@unique([email, token])
+}
+
+model FinanceAccount {
+  id           String        @id @default(uuid())
+  name         String
+  type         String
+  balance      Float         @default(0)
+  currency     String        @default("INR")
+  institution  String
+  color        String        @default("#0f62fe")
+  isConnected  Boolean       @default(false)
+  lastSyncAt   DateTime?
+  syncStatus   String        @default("idle")
+  externalRef  String?
+  lastUpdated  DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId])
+}
+
+model Transaction {
+  id            String         @id @default(uuid())
+  amount        Float
+  type          String
+  category      String
+  categoryColor String         @default("#0f62fe")
+  description   String
+  date          DateTime
+  notes         String?
+  externalId    String?        @unique
+  source        String         @default("manual")
+  status        String         @default("confirmed") // pending, confirmed, flagged
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  userId        String
+  accountId     String
+  account       FinanceAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([date])
+  @@index([category])
+}
+
+model Budget {
+  id             String   @id @default(uuid())
+  category       String
+  categoryColor  String   @default("#0f62fe")
+  amount         Float
+  period         String   @default("monthly")
+  alertThreshold Float    @default(80)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category])
+  @@index([userId])
+}
+
+model SavingsGoal {
+  id            String   @id @default(uuid())
+  name          String
+  targetAmount  Float
+  currentAmount Float    @default(0)
+  targetDate    DateTime
+  priority      String   @default("medium")
+  icon          String   @default("🎯")
+  color         String   @default("#0f62fe")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Investment {
+  id            String   @id @default(uuid())
+  name          String
+  type          String
+  purchasePrice Float
+  currentValue  Float
+  units         Float
+  purchaseDate  DateTime
+  color         String   @default("#0f62fe")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Insight {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  type        String
+  isRead      Boolean  @default(false)
+  generatedAt DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model SyncLog {
+  id          String    @id @default(uuid())
+  accountId   String
+  status      String
+  newCount    Int       @default(0)
+  dupCount    Int       @default(0)
+  errorMsg    String?
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  userId      String
+
+  @@index([userId])
+  @@index([accountId])
+}
+
+model ConnectedEmail {
+  id           String    @id @default(uuid())
+  email        String
+  provider     String
+  accessToken  String?
+  refreshToken String?
+  isConnected  Boolean   @default(true)
+  lastSyncAt   DateTime?
+  syncStatus   String    @default("idle")
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, email])
+  @@index([userId])
+}
