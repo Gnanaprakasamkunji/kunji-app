@@ -206,13 +206,18 @@ const DonutChart: React.FC<DonutChartProps> = ({
             </ResponsiveContainer>
 
             {/* Legend grid */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem 1rem', marginTop: '0.5rem' }}>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '0.5rem 1rem',
+                marginTop: '0.75rem',
+            }}>
                 {data.map((entry) => {
                     const pct = total > 0 ? ((entry.value / total) * 100).toFixed(1) : '0';
                     return (
-                        <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', minWidth: '120px' }}>
+                        <div key={entry.name} style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                             <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: entry.color, flexShrink: 0 }} />
-                            <span style={{ fontSize: '0.75rem', color: 'var(--cds-text-secondary)', fontWeight: 500 }}>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--cds-text-secondary)', fontWeight: 500, whiteSpace: 'nowrap' }}>
                                 {entry.name} ({pct}%)
                             </span>
                         </div>
