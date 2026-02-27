@@ -1,0 +1,631 @@
+@use '@carbon/react/scss/themes';
+@use '@carbon/react/scss/theme' with ($theme: themes.$white);
+@use '@carbon/react/scss/reset';
+@use '@carbon/react/scss/type';
+@use '@carbon/react/scss/grid';
+@use '@carbon/react/scss/components';
+
+/* ===== Premium Theme Variables scoped to Light/Dark Mode ===== */
+[data-theme="dark"] {
+  /* Injecting a rich dark mode color palette mapped to Carbon */
+  --cds-background: #090a0f;
+  --cds-layer-01: rgba(22, 24, 32, 0.65);
+  --cds-layer-selected-01: rgba(36, 40, 56, 0.8);
+  --cds-layer-hover-01: rgba(32, 36, 48, 0.8);
+  --cds-border-subtle-01: rgba(255, 255, 255, 0.06);
+  --cds-border-strong-01: rgba(255, 255, 255, 0.15);
+  --cds-interactive: #2a75ff; // Vibrant primary blue
+  --cds-support-success: #1fe074; // Vibrant green
+  --cds-support-error: #ff3b4a; // Vibrant red
+  --cds-support-warning: #ffb822; // Vibrant yellow
+  --cds-text-primary: #f8fafc;
+  --cds-text-secondary: #94a3b8;
+  --cds-text-helper: #64748b;
+  --cds-field-01: rgba(36, 40, 56, 0.8);
+  --cds-field-02: rgba(36, 40, 56, 0.8);
+  --cds-field-hover-01: rgba(32, 36, 48, 0.8);
+  --cds-layer-02: rgba(36, 40, 56, 0.8);
+  --cds-layer-accent-01: rgba(22, 24, 32, 0.9);
+  --cds-layer-accent-02: rgba(36, 40, 56, 0.9);
+  --cds-text-on-color: #ffffff;
+  --cds-icon-primary: #f8fafc;
+  --cds-focus: #2a75ff;
+
+
+  --premium-glow: 0 8px 32px rgba(42, 117, 255, 0.15);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+  --ambient-gradient-1: rgba(42, 117, 255, 0.04);
+  --ambient-gradient-2: rgba(138, 43, 226, 0.03);
+  --card-glass-border-hover: rgba(255, 255, 255, 0.12);
+  --card-glass-glow: rgba(0, 0, 0, 0.3);
+  --card-base-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  --card-shimmer: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+  --progress-bg: rgba(255, 255, 255, 0.05);
+  --insight-card-bg: rgba(255, 255, 255, 0.02);
+  --insight-card-border: rgba(255, 255, 255, 0.04);
+  --insight-card-hover-bg: rgba(42, 117, 255, 0.08);
+  --insight-card-hover-border: rgba(42, 117, 255, 0.25);
+  --badge-positive-bg: rgba(31, 224, 116, 0.15);
+  --badge-positive-border: rgba(31, 224, 116, 0.25);
+  --badge-negative-bg: rgba(255, 59, 74, 0.15);
+  --badge-negative-border: rgba(255, 59, 74, 0.25);
+  --sidebar-bg: rgba(15, 16, 22, 0.8);
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-active-text: #ffffff;
+  --title-gradient-1: #ffffff;
+  --title-gradient-2: #cbd5e1;
+  --login-card-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"],
+:root {
+  --premium-glow: 0 8px 32px rgba(42, 117, 255, 0.08);
+  --glass-border: 1px solid rgba(0, 0, 0, 0.05);
+  --ambient-gradient-1: rgba(42, 117, 255, 0.02);
+  --ambient-gradient-2: rgba(138, 43, 226, 0.015);
+  --card-glass-border-hover: rgba(0, 0, 0, 0.12);
+  --card-glass-glow: rgba(0, 0, 0, 0.06);
+  --card-base-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --card-shimmer: rgba(0, 0, 0, 0.04);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.25);
+  --progress-bg: rgba(0, 0, 0, 0.05);
+  --insight-card-bg: rgba(0, 0, 0, 0.02);
+  --insight-card-border: rgba(0, 0, 0, 0.04);
+  --insight-card-hover-bg: rgba(42, 117, 255, 0.04);
+  --insight-card-hover-border: rgba(42, 117, 255, 0.15);
+  --badge-positive-bg: rgba(31, 224, 116, 0.08);
+  --badge-positive-border: rgba(31, 224, 116, 0.15);
+  --badge-negative-bg: rgba(255, 59, 74, 0.08);
+  --badge-negative-border: rgba(255, 59, 74, 0.15);
+  --sidebar-bg: rgba(255, 255, 255, 0.85);
+  --sidebar-border: rgba(0, 0, 0, 0.06);
+  --sidebar-active-text: var(--cds-text-primary);
+  --title-gradient-1: #1e293b;
+  --title-gradient-2: #334155;
+  --login-card-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: 'Inter', 'IBM Plex Sans', -apple-system, sans-serif;
+  background-color: var(--cds-background);
+  /* Mesh gradient ambient background */
+  background-image:
+    radial-gradient(circle at 15% 50%, var(--ambient-gradient-1) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, var(--ambient-gradient-2) 0%, transparent 50%);
+  color: var(--cds-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#__next {
+  height: 100%;
+}
+
+/* ===== Fluid Grid Layout Container (Max 1920px Rule) ===== */
+.kunji-main-container {
+  max-width: 1920px;
+  margin-inline: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ===== Elegant Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* ===== Animations ===== */
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(42, 117, 255, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(42, 117, 255, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(42, 117, 255, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== Page Layout ===== */
+.kunji-page {
+  padding: 2.5rem 3rem;
+  min-height: calc(100vh - 4rem);
+  opacity: 0;
+  animation: slideUpFade 0.5s ease-out forwards;
+}
+
+.kunji-page__header {
+  margin-bottom: 2.5rem;
+}
+
+.kunji-page__title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--title-gradient-1) 0%, var(--title-gradient-2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.375rem;
+}
+
+.kunji-page__subtitle {
+  font-size: 0.9375rem;
+  color: var(--cds-text-secondary);
+  font-weight: 400;
+}
+
+/* ===== Premium Glassmorphic Card ===== */
+.kunji-card {
+  background-color: var(--cds-layer-01);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: var(--glass-border);
+  box-shadow: var(--card-base-shadow);
+  transition: all 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.kunji-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--card-shimmer), transparent);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.kunji-card:hover {
+  border-color: var(--card-glass-border-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px var(--card-glass-glow), var(--premium-glow);
+}
+
+.kunji-card:hover::before {
+  opacity: 1;
+}
+
+/* ===== Grid Utilities ===== */
+.kunji-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.kunji-grid--2 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.kunji-grid--3 {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.kunji-grid--4 {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* ===== Status Colors ===== */
+.kunji-status--positive {
+  color: var(--cds-support-success);
+}
+
+.kunji-status--negative {
+  color: var(--cds-support-error);
+}
+
+.kunji-status--warning {
+  color: var(--cds-support-warning);
+}
+
+.kunji-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  gap: 0.25rem;
+}
+
+.kunji-status-badge.positive {
+  background: var(--badge-positive-bg);
+  color: var(--cds-support-success);
+  border: 1px solid var(--badge-positive-border);
+}
+
+.kunji-status-badge.negative {
+  background: var(--badge-negative-bg);
+  color: var(--cds-support-error);
+  border: 1px solid var(--badge-negative-border);
+}
+
+/* ===== Dashboard Layout ===== */
+.kunji-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.kunji-dashboard__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.kunji-dashboard__charts {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .kunji-dashboard__charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .kunji-page {
+    padding: 1.5rem;
+  }
+
+  .kunji-page__title {
+    font-size: 1.5rem;
+  }
+}
+
+/* ===== App Shell Layout ===== */
+.kunji-app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.kunji-app-shell__content {
+  flex: 1;
+  min-width: 0;
+  margin-left: 260px;
+  margin-top: 56px;
+  transition: margin-left 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: transparent;
+}
+
+@media (max-width: 1056px) {
+  .kunji-app-shell__content {
+    margin-left: 0;
+  }
+}
+
+/* ===== Sidebar Enhancements ===== */
+.kunji-sidebar .cds--side-nav {
+  background-color: var(--sidebar-bg) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--sidebar-border) !important;
+}
+
+.kunji-sidebar .cds--side-nav__link {
+  transition: all 200ms ease;
+  border-radius: 8px;
+  margin: 0.25rem 0.5rem;
+  width: calc(100% - 1rem);
+}
+
+.kunji-sidebar .cds--side-nav__link[aria-current="page"] {
+  background: linear-gradient(90deg, rgba(42, 117, 255, 0.15), transparent) !important;
+  border-left: 3px solid var(--cds-interactive) !important;
+  color: var(--sidebar-active-text) !important;
+}
+
+/* ===== Empty State (UX Guideline) ===== */
+.kunji-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  text-align: center;
+  min-height: 400px;
+  background: var(--cds-layer-01);
+  border: 1px dashed var(--cds-border-strong-01);
+  border-radius: 16px;
+}
+
+.kunji-empty-state__icon {
+  margin-bottom: 1.5rem;
+  color: var(--cds-interactive);
+  opacity: 0.8;
+  filter: drop-shadow(0 0 12px rgba(42, 117, 255, 0.4));
+}
+
+.kunji-empty-state__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--cds-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.kunji-empty-state__description {
+  font-size: 0.875rem;
+  color: var(--cds-text-secondary);
+  max-width: 400px;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* ===== Progress Bar & Badges ===== */
+.kunji-progress {
+  width: 100%;
+  height: 6px;
+  background-color: var(--progress-bg);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.kunji-progress__fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #2a75ff, #8a2be2);
+  transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ===== Interactive Insight Card ===== */
+.kunji-insight-card {
+  background: var(--insight-card-bg);
+  border: 1px solid var(--insight-card-border);
+  border-left: 3px solid var(--cds-interactive);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: all 250ms ease;
+  cursor: pointer;
+}
+
+.kunji-insight-card:hover {
+  background: var(--insight-card-hover-bg);
+  border-color: var(--insight-card-hover-border);
+  transform: translateX(4px);
+}
+
+.kunji-insight-card__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.375rem;
+  color: var(--cds-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.kunji-insight-card__text {
+  font-size: 0.8125rem;
+  color: var(--cds-text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== Login Page ===== */
+.kunji-login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--cds-background);
+  background-image:
+    radial-gradient(circle at 15% 50%, var(--ambient-gradient-1) 0%, transparent 50%),
+    radial-gradient(circle at 85% 30%, var(--ambient-gradient-2) 0%, transparent 50%);
+}
+
+.kunji-login__card {
+  background: var(--cds-layer-01);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 420px;
+  border: var(--glass-border);
+  box-shadow: var(--login-card-shadow);
+}
+
+.kunji-login__logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.kunji-login__logo h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cds-interactive), #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.kunji-login__logo p {
+  color: var(--cds-text-secondary);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+}
+
+.kunji-login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.kunji-login__divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--cds-text-secondary);
+  font-size: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.kunji-login__divider::before,
+.kunji-login__divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--cds-border-subtle-01);
+}
+
+.kunji-login__footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--cds-text-secondary);
+}
+
+.kunji-login__footer a {
+  color: var(--cds-interactive);
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .kunji-login__card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+    border-radius: 12px;
+  }
+}
+
+/* ===== Settings Page ===== */
+.kunji-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 640px;
+}
+
+.kunji-settings__section {
+  background: var(--cds-layer-01);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  padding: 1.75rem;
+  border: var(--glass-border);
+  box-shadow: var(--card-base-shadow);
+}
+
+.kunji-settings__section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--cds-text-primary);
+}
+
+/* ===== Responsive Page Header ===== */
+.kunji-page__header--split {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+  .kunji-page__header--split {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ===== Investment Layout ===== */
+.kunji-investment-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.kunji-investment-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+  .kunji-investment-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .kunji-investment-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== System Theme Fallback ===== */
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    --cds-background: #090a0f;
+    --cds-text-primary: #f8fafc;
+    --cds-text-secondary: #94a3b8;
+  }
+}
